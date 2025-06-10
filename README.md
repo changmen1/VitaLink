@@ -1,30 +1,36 @@
-# React + TypeScript + Vite
+# HL7-Electron  VitaLink
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## ✅ **功能目标总结**
 
-Currently, two official plugins are available:
+1. ✅ 解析 HL7 数据（如 ORU^R01、ADT^A01 等 HL7 消息）
+2. ✅ 发送 HL7 数据到其他系统（如 HIS、LIS）
+3. ✅ 自定义开启一个服务（socket 服务或 HTTP 服务）来**接收 HL7 数据**
+4. ✅ 提供桌面 GUI，便于配置、查看、调试
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🏗️ 实现整体思路（技术结构）
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### 🔧 技术选型建议
 
-- Configure the top-level `parserOptions` property like this:
+| 层级          | 技术建议                                                                           |
+| ----------- | ------------------------------------------------------------------------------ |
+| Electron 前端 | React + Electron                                                           |
+| HL7 处理      | [hl7 standard parser](https://www.npmjs.com/package/hl7-standard), `hl7` (npm) |
+| 通信方式        | TCP Socket（使用 `net` 模块）                                                      |
+| 数据存储        | 本地 SQLite（用于持久化配置）                                                      |
+| 服务启动        | 使用 Express server                                           |
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+---
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## ✅ 功能
+
+| 功能模块 | 描述                |
+| ---- | ----------------- |
+| 解析工具 | 解析 HL7 为 JSON 并展示 |
+| 日志面板 | 显示收发记录            |
+| 配置面板 | 设置端口、地址、HL7 模板    |
+| 服务管理 | 开启/关闭 TCP 接收服务    |
+| 快捷测试 | 发送自定义 HL7 测试消息    |
+
+---

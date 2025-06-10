@@ -23,7 +23,7 @@ function createWindow() {
     // TODO 窗口是否透明
     // transparent: true,
     // TODO 是否允许缩窗口
-    resizable: false,
+    // resizable: false,
     // TODO 窗口是否置顶
     // alwaysOnTop: true,
     // TODO 是否自动隐藏窗口菜单栏。 一旦设置，菜单栏将只在用户单击 Alt 键时显示

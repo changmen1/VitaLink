@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu, Notification, screen, dialog } from "electron";
+import { app, BrowserWindow, ipcMain, Menu, Notification, dialog } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -11,13 +11,13 @@ let win;
 let aboutWindow = null;
 function createWindow() {
   win = new BrowserWindow({
-    width: 414,
+    width: 1e3,
     height: 736,
     // backgroundColor: 'pink',
     icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
     // TODO 定位屏幕右上角
-    x: screen.getPrimaryDisplay().workAreaSize.width - 414,
-    y: 0,
+    // x: screen.getPrimaryDisplay().workAreaSize.width - 414,
+    // y: 0,
     // TODO 是否显示边框
     // frame: false,
     // TODO 窗口是否透明
@@ -27,7 +27,7 @@ function createWindow() {
     // TODO 窗口是否置顶
     // alwaysOnTop: true,
     // TODO 是否自动隐藏窗口菜单栏。 一旦设置，菜单栏将只在用户单击 Alt 键时显示
-    // autoHideMenuBar: true,
+    autoHideMenuBar: true,
     // TODO 是否全屏幕
     // fullscreen: false,
     // TODO 隐藏图标 钓鱼软件哈哈哈

@@ -18,7 +18,13 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
     const [channel, ...omit] = args
     return ipcRenderer.invoke(channel, ...omit)
   },
-
   // You can expose other APTs you need here.
   // ...
 })
+
+// --------- Listen for context menu in renderer ---------
+window.addEventListener('contextmenu', (e) => {
+  e.preventDefault()
+  ipcRenderer.send('show-context-menu')  // 发送事件给主进程
+})
+

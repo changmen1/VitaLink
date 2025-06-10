@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, screen } from "electron";
+import { app, BrowserWindow, ipcMain, Menu, Notification, screen, dialog } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -30,6 +30,8 @@ function createWindow() {
     // autoHideMenuBar: true,
     // TODO 是否全屏幕
     // fullscreen: false,
+    // TODO 隐藏图标 钓鱼软件哈哈哈
+    // skipTaskbar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.mjs")
     }
@@ -40,7 +42,6 @@ function createWindow() {
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
   } else {
-    console.log(">>>>>>>>>>>>>>>>>>执行了");
     win.loadFile(path.join(RENDERER_DIST, "index.html"));
   }
 }
@@ -56,6 +57,34 @@ app.on("activate", () => {
   }
 });
 app.whenReady().then(createWindow);
+ipcMain.on("show-context-menu", (event) => {
+  const handleMessage = async () => {
+    const res = await dialog.showMessageBox({
+      type: "warning",
+      title: "你要退出吗？",
+      message: "请确认是否退出应用",
+      detail: "有问题可以联系作者",
+      buttons: ["取消", "赞助", "退出"],
+      //取消按钮的索引，使用esc根据索引调用取消按钮，默认为0，所以建议在buttons中将取消设置为第一个
+      cancelId: 0,
+      checkboxLabel: "接收协议",
+      checkboxChecked: false
+    });
+    if (res.response == 0) return dialog.showErrorBox("通知", "我恨死你了马云");
+    if (res.response == 1) {
+      console.log("66666666666666>>>>>>>>>>>>>>>>>赞助");
+    }
+    if (res.response == 2) app.quit();
+  };
+  const popupMenuTemplate = [
+    { label: "退出", click: () => app.quit() },
+    { label: "赞助☕️", click: handleMessage }
+  ];
+  const menu2 = Menu.buildFromTemplate(popupMenuTemplate);
+  menu2.popup({
+    window: BrowserWindow.fromWebContents(event.sender)
+  });
+});
 const template = [
   {
     label: "红烧罗非鱼",
@@ -119,15 +148,11 @@ const template = [
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
 app.whenReady().then(() => {
-  const win2 = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
-    }
+  const notification = new Notification({
+    title: "红烧罗非鱼通知",
+    body: "更多开源请访问 https://github.com/changmen1"
   });
-  win2.loadURL("https://github.com/changmen1");
+  notification.show();
 });
 export {
   MAIN_DIST,

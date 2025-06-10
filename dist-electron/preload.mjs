@@ -20,3 +20,7 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   // You can expose other APTs you need here.
   // ...
 });
+window.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+  electron.ipcRenderer.send("show-context-menu");
+});

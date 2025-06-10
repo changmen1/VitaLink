@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, Menu, MenuItemConstructorOptions, MenuItem } from 'electron'
+import { app, BrowserWindow, screen, Menu, MenuItemConstructorOptions, MenuItem, ipcMain, dialog, Notification } from 'electron'
 // import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -40,6 +40,8 @@ function createWindow() {
     // autoHideMenuBar: true,
     // TODO 是否全屏幕
     // fullscreen: false,
+    // TODO 隐藏图标 钓鱼软件哈哈哈
+    // skipTaskbar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
     },
@@ -55,9 +57,9 @@ function createWindow() {
     // TODO 打开开发者工具
     // win.webContents.openDevTools()
   } else {
-    console.log(">>>>>>>>>>>>>>>>>>执行了")
     win.loadFile(path.join(RENDERER_DIST, 'index.html'))
   }
+
 }
 
 app.on('window-all-closed', () => {
@@ -75,8 +77,41 @@ app.on('activate', () => {
 
 app.whenReady().then(createWindow)
 
-// TODO -----------------------------------------------自定义菜单--------------------------------------------------------
+// TODO -----------------------------------------------监听右键菜单请求--------------------------------------------------------
+ipcMain.on('show-context-menu', (event) => {
+  // TODO 赞助通知
+  const handleMessage = async () => {
+    const res = await dialog.showMessageBox({
+      type: 'warning',
+      title: '你要退出吗？',
+      message: '请确认是否退出应用',
+      detail: '有问题可以联系作者',
+      buttons: ['取消', '赞助', '退出'],
+      //取消按钮的索引，使用esc根据索引调用取消按钮，默认为0，所以建议在buttons中将取消设置为第一个
+      cancelId: 0,
+      checkboxLabel: '接收协议',
+      checkboxChecked: false,
+    })
 
+    if (res.response == 0) return dialog.showErrorBox('通知', '我恨死你了马云')
+    if (res.response == 1) { console.log("66666666666666>>>>>>>>>>>>>>>>>赞助") }
+    if (res.response == 2) app.quit()
+  }
+
+  const popupMenuTemplate = [
+    { label: '退出', click: () => app.quit() },
+    { label: '赞助☕️', click: handleMessage }
+  ]
+
+  const menu = Menu.buildFromTemplate(popupMenuTemplate)
+
+  // 通过 event.sender 获取触发菜单的窗口实例
+  menu.popup({
+    window: BrowserWindow.fromWebContents(event.sender) as any
+  })
+})
+
+// TODO -----------------------------------------------自定义菜单--------------------------------------------------------
 const template: Array<(MenuItemConstructorOptions) | (MenuItem)> = [
   {
     label: '红烧罗非鱼',
@@ -140,18 +175,28 @@ const template: Array<(MenuItemConstructorOptions) | (MenuItem)> = [
 ]
 const menu = Menu.buildFromTemplate(template)
 Menu.setApplicationMenu(menu)
-// TODO 清除菜单
+
+// TODO -----------------------------------------------清除菜单--------------------------------------------------------
 // Menu.setApplicationMenu(null)
 
-// TODO 应用启动还在赞助页面
+// TODO -----------------------------------------------应用启动--------------------------------------------------------
 app.whenReady().then(() => {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  })
-  win.loadURL('https://github.com/changmen1') // 或 loadFile(...) 加载你的主界面
-})
+  // TODO 启动通知
+  const notification = new Notification({
+    title: '红烧罗非鱼通知',
+    body: '更多开源请访问 https://github.com/changmen1',
+  });
+
+  notification.show();
+
+  // TODO 启动赞助页面
+  //   const win = new BrowserWindow({
+  //     width: 800,
+  //     height: 600,
+  //     webPreferences: {
+  //       nodeIntegration: true,
+  //       contextIsolation: false,
+  //     },
+  //   })
+  //   win.loadURL('https://github.com/changmen1') // 或 loadFile(...) 加载你的主界面
+});

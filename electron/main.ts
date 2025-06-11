@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, MenuItemConstructorOptions, MenuItem, ipcMain, dialog, Notification } from 'electron'
+import { app, BrowserWindow, Menu, MenuItemConstructorOptions, MenuItem, ipcMain, dialog, Notification, Tray } from 'electron'
 // import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -19,12 +19,15 @@ let win: BrowserWindow | null
 /** 关于窗口  */
 let aboutWindow: BrowserWindow | null = null
 
+let tray: Tray; // 提升作用域
+let isQuiting = false;
+
 function createWindow() {
   win = new BrowserWindow({
     width: 1000,
     height: 736,
     // backgroundColor: 'pink',
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
+    icon: path.join(process.env.VITE_PUBLIC, 'vita-link.png'),
     // TODO 定位屏幕右上角
     // x: screen.getPrimaryDisplay().workAreaSize.width - 414,
     // y: 0,
@@ -51,19 +54,78 @@ function createWindow() {
     win?.webContents.send('main-process-message', (new Date).toLocaleString())
   })
 
+
   if (VITE_DEV_SERVER_URL) {
     // win.loadURL('https://github.com/changmen1')
     win.loadURL(VITE_DEV_SERVER_URL)
     // TODO 打开开发者工具
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
   } else {
     win.loadFile(path.join(RENDERER_DIST, 'index.html'))
   }
 
+  // 阻止窗口关闭，改为隐藏到托盘
+  win.on('close', (event) => {
+    if (!isQuiting) {
+      event.preventDefault();
+      win?.hide();
+    }
+  });
+
+}
+
+// TODO -----------------------------------------------初始化系统托盘--------------------------------------------------------
+function createTray() {
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>创建托盘实例<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+  // 系统托盘图标
+  const iconPath = path.join(process.env.VITE_PUBLIC, 'vita-link.png');
+  tray = new Tray(iconPath);
+
+  // 创建托盘实例
+  // let tray = new Tray(iconPath);
+
+  // 托盘提示文本
+  tray.setToolTip('红烧罗非鱼');
+
+  // 创建托盘菜单
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '显示应用',
+      click: () => {
+        if (win && win.isMinimized()) {
+          win.restore();
+        }
+        if (win) {
+          win.show();
+        }
+      }
+    },
+    {
+      label: '退出',
+      click: () => {
+        isQuiting = true;
+        app.quit();
+      }
+    }
+  ]);
+
+  // 设置托盘菜单
+  tray.setContextMenu(contextMenu);
+
+  // 点击托盘图标显示窗口
+  tray.on('click', () => {
+    if (win && win.isMinimized()) {
+      win.restore();
+    }
+    if (win) {
+      win.show();
+    }
+  });
 }
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    // 退出应用
     app.quit()
     win = null
   }
@@ -75,7 +137,10 @@ app.on('activate', () => {
   }
 })
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  createWindow()
+  createTray()
+})
 
 // TODO -----------------------------------------------监听右键菜单请求--------------------------------------------------------
 ipcMain.on('show-context-menu', (event) => {

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu, Notification, dialog } from "electron";
+import { app, BrowserWindow, ipcMain, Menu, Notification, Tray, dialog } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -9,12 +9,14 @@ const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
 let win;
 let aboutWindow = null;
+let tray;
+let isQuiting = false;
 function createWindow() {
   win = new BrowserWindow({
     width: 1e3,
     height: 736,
     // backgroundColor: 'pink',
-    icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
+    icon: path.join(process.env.VITE_PUBLIC, "vita-link.png"),
     // TODO 定位屏幕右上角
     // x: screen.getPrimaryDisplay().workAreaSize.width - 414,
     // y: 0,
@@ -41,10 +43,50 @@ function createWindow() {
   });
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
-    win.webContents.openDevTools();
   } else {
     win.loadFile(path.join(RENDERER_DIST, "index.html"));
   }
+  win.on("close", (event) => {
+    if (!isQuiting) {
+      event.preventDefault();
+      win == null ? void 0 : win.hide();
+    }
+  });
+}
+function createTray() {
+  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>创建托盘实例<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+  const iconPath = path.join(process.env.VITE_PUBLIC, "vita-link.png");
+  tray = new Tray(iconPath);
+  tray.setToolTip("红烧罗非鱼");
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: "显示应用",
+      click: () => {
+        if (win && win.isMinimized()) {
+          win.restore();
+        }
+        if (win) {
+          win.show();
+        }
+      }
+    },
+    {
+      label: "退出",
+      click: () => {
+        isQuiting = true;
+        app.quit();
+      }
+    }
+  ]);
+  tray.setContextMenu(contextMenu);
+  tray.on("click", () => {
+    if (win && win.isMinimized()) {
+      win.restore();
+    }
+    if (win) {
+      win.show();
+    }
+  });
 }
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -57,7 +99,10 @@ app.on("activate", () => {
     createWindow();
   }
 });
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+  createTray();
+});
 ipcMain.on("show-context-menu", (event) => {
   const handleMessage = async () => {
     const res = await dialog.showMessageBox({

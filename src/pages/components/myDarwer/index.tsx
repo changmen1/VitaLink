@@ -16,11 +16,11 @@ import Alipay from "@/assets/Alipay.jpg"
 interface AdvertiseConfig {
     /**挂载时是否显示 */
     showOnMount?: boolean;
-    /** 自动隐藏时间(毫秒) */
+    /**自动隐藏时间(毫秒) */
     autoHideAfter?: number;
     /**关闭回调 */
     onClose?: () => void;
-    /** 是否显示倒计时 */
+    /**是否显示倒计时 */
     showCountdown?: boolean;
 }
 

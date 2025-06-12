@@ -36,11 +36,11 @@ export function NavDocuments({
 
     return (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>Documents</SidebarGroupLabel>
+            <SidebarGroupLabel>文档</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map((item) => (
                     <SidebarMenuItem key={item.name}>
-                        <SidebarMenuButton asChild>
+                        <SidebarMenuButton asChild className="hover:bg-muted active:scale-95 transition-all">
                             <a href={item.url}>
                                 <item.icon />
                                 <span>{item.name}</span>
@@ -74,9 +74,10 @@ export function NavDocuments({
                     </SidebarMenuItem>
                 ))}
                 <SidebarMenuItem>
-                    <SidebarMenuButton className="text-sidebar-foreground/70">
+                    <SidebarMenuButton className="hover:bg-muted active:scale-95 transition-all">
                         <MoreHorizontalIcon className="text-sidebar-foreground/70" />
-                        <span>More</span>
+                        {/* https://github.com/changmen1/VitaLink/issues */}
+                        <span>issues</span>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             </SidebarMenu>

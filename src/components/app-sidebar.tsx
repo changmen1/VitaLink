@@ -1,6 +1,6 @@
 // TODO 自定义组件 关于菜单
 
-import { BarChartIcon, CameraIcon, ClipboardListIcon, DatabaseIcon, FileCodeIcon, FileIcon, FileTextIcon, FolderIcon, HelpCircleIcon, Hospital, LayoutDashboardIcon, ListIcon, SearchIcon, SettingsIcon, UsersIcon } from "lucide-react"
+import { BarChartIcon, FileIcon, FolderIcon, HelpCircleIcon, Hospital, LayoutDashboardIcon, ListIcon, SearchIcon, SettingsIcon, UsersIcon } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -26,111 +26,58 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
-      url: "#",
+      title: "主页",
+      url: "/home",
       icon: LayoutDashboardIcon,
     },
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: ListIcon,
-    },
-    {
-      title: "Analytics",
+      title: "解析",
       url: "#",
       icon: BarChartIcon,
     },
     {
-      title: "Projects",
+      title: "发送",
       url: "#",
       icon: FolderIcon,
     },
     {
-      title: "Team",
+      title: "服务",
+      url: "#",
+      icon: FolderIcon,
+    },
+    {
+      title: "隧道",
       url: "#",
       icon: UsersIcon,
     },
-  ],
-  navClouds: [
     {
-      title: "Capture",
-      icon: CameraIcon,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: FileTextIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: FileCodeIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: SettingsIcon,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: HelpCircleIcon,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: SearchIcon,
+      title: "关于",
+      url: "/about",
+      icon: ListIcon,
     },
   ],
   documents: [
     {
-      name: "Data Library",
-      url: "#",
-      icon: DatabaseIcon,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: ClipboardListIcon,
-    },
-    {
-      name: "Word Assistant",
+      name: "Word HL7",
       url: "#",
       icon: FileIcon,
+    },
+  ],
+  navSecondary: [
+    {
+      title: "设置",
+      url: "#",
+      icon: SettingsIcon,
+    },
+    {
+      title: "帮助",
+      url: "#",
+      icon: HelpCircleIcon,
+    },
+    {
+      title: "issues",
+      url: "#",
+      icon: SearchIcon,
     },
   ],
 }

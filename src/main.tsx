@@ -4,14 +4,17 @@ import './index.css'
 import App from './App.tsx'
 import { ThemeProvider } from '@/components/ui/theme-provider.tsx'
 import Layout from './pages/layout/layout';
+import { HashRouter } from 'react-router-dom'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Layout>
-        <App />
-      </Layout>
-    </ThemeProvider>
+    <HashRouter>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <Layout>
+          <App />
+        </Layout>
+      </ThemeProvider>
+    </HashRouter>
   </React.StrictMode>,
 )
 

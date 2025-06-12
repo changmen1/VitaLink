@@ -1,5 +1,6 @@
 import { useState } from "react";
 import MyAdvertise from "./pages/components/myDarwer";
+import RouterProvider from "./router";
 
 function App() {
   const [showAd, setShowAd] = useState(true);
@@ -9,12 +10,12 @@ function App() {
   };
   return (
     <>
-      <h1>内容</h1>
-      {/* 广告组件 - 挂载时显示，10秒后自动隐藏 */}
+      <RouterProvider />
+      {/* 广告组件 - 挂载时显示*/}
       {showAd && (
         <MyAdvertise
           showOnMount={true}
-          autoHideAfter={60000}
+          autoHideAfter={10000}
           onClose={handleAdClose}
         />
       )}
